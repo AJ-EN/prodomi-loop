@@ -1,0 +1,13 @@
+Command:
+PRODOMI_SOURCE_ROOT=/private/tmp/prodomi-loop-task-b-baseline/src python3 -m unittest acceptance/test_task_b_refund_rules.py
+
+Result:
+FF
+FAIL: test_jpy_refund_uses_zero_minor_units_and_bankers_rounding
+AssertionError: Decimal('100') != Decimal('100.50')
+
+FAIL: test_usd_halfway_refund_uses_bankers_rounding
+AssertionError: Decimal('55.22') != Decimal('55.23')
+
+Ran 2 tests in 0.001s
+FAILED (failures=2)

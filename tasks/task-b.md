@@ -2,7 +2,9 @@
 
 ## Status
 
-Holdout task for validating the candidate `currency-rules` capability.
+Completed. The capability-assisted clean-worktree candidate passed the
+independent contract after the pre-capability baseline failed. See
+`evidence/task-b-promotion.md`.
 
 ## Objective
 

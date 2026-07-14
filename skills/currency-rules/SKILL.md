@@ -1,6 +1,8 @@
 ---
 name: currency-rules
 description: Apply Prodomi Loop's checkout-currency rounding rules when editing monetary calculations.
+status: promoted
+promoted_at: 2026-07-14T06:36:06Z
 ---
 
 # Currency rules
@@ -38,4 +40,5 @@ Use this capability for checkout, refund, and invoice totals in this repository.
 
 Task A showed that a plausible two-decimal, round-half-up implementation passes
 ordinary examples but violates repository policy at currency and half-way
-boundaries. This capability makes that previously missing rule reusable.
+boundaries. The Task B refund holdout improved from a failing baseline to a
+passing capability-assisted result, so this capability is promoted for reuse.
