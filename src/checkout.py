@@ -1,13 +1,18 @@
-"""Checkout calculation candidate used to demonstrate Task A failure."""
+"""Checkout totals governed by the repository currency-rules capability."""
 
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_EVEN
+
+
+CURRENCY_MINOR_UNITS = {"USD": 2, "JPY": 0}
 
 
 def calculate_checkout_total(amount: Decimal, currency: str) -> Decimal:
-    """Return a display total for a checkout amount.
+    """Return ``amount`` rounded for its configured checkout currency."""
+    normalized_currency = currency.upper()
+    try:
+        minor_units = CURRENCY_MINOR_UNITS[normalized_currency]
+    except KeyError as error:
+        raise ValueError(f"Unsupported currency: {currency}") from error
 
-    This deliberately plausible baseline only handles the common two-decimal
-    checkout case. Task A's independent contract exposes the missing rule.
-    """
-    del currency
-    return amount.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    quantizer = Decimal(1).scaleb(-minor_units)
+    return amount.quantize(quantizer, rounding=ROUND_HALF_EVEN)
