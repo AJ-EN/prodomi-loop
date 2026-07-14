@@ -125,7 +125,7 @@
     <main class="page">
       <header>
         <div class="brand"><span class="logo">P</span> Prodomi Loop</div>
-        <div class="local"><span class="dot"></span> Local deterministic proof</div>
+        <div class="local" id="mode-label"><span class="dot"></span> Local deterministic proof</div>
       </header>
 
       <section class="intro">
@@ -188,7 +188,7 @@
       </section>
 
       <div class="live-strip">
-        <span class="live-label">Live verifier</span>
+        <span class="live-label" id="verifier-label">Live verifier</span>
         <span class="live-message" id="live-message">Waiting to create clean worktrees.</span>
         <span class="runtime" id="runtime">Not run</span>
       </div>
@@ -211,13 +211,16 @@
 
       <footer>
         <span>Real Git worktrees · independent tests · human decision</span>
-        <span>No external API required</span>
+        <span id="mode-note">No external API required</span>
       </footer>
     </main>
 
     <script>
       const runButton = document.querySelector("#run-proof");
       const offline = document.querySelector("#offline");
+      const modeLabel = document.querySelector("#mode-label");
+      const modeNote = document.querySelector("#mode-note");
+      const verifierLabel = document.querySelector("#verifier-label");
       const terminal = document.querySelector("#terminal");
       const liveMessage = document.querySelector("#live-message");
       const runtime = document.querySelector("#runtime");
@@ -227,6 +230,8 @@
       const gateCopy = document.querySelector("#gate-copy");
       const promoteButton = document.querySelector("#promote");
       const rejectButton = document.querySelector("#reject");
+      const localHostnames = new Set(["127.0.0.1", "localhost"]);
+      const isHostedPreview = location.protocol !== "file:" && !localHostnames.has(location.hostname);
       let renderQueue = Promise.resolve();
 
       const stages = {
@@ -308,8 +313,47 @@
         }
       }
 
+      function unlockDecision(data) {
+        runtime.textContent = `${data.duration_ms}ms ${isHostedPreview ? "verified runtime" : "actual runtime"}`;
+        setPhase("decision", "active");
+        gate.dataset.state = data.promotion_unlocked ? "ready" : "locked";
+        gateLabel.textContent = data.promotion_unlocked ? "Promotion gate · evidence satisfied" : "Promotion gate · locked";
+        gateHeading.textContent = data.promotion_unlocked ? "The capability earned promotion review" : "Transfer was not proven";
+        gateCopy.textContent = data.promotion_unlocked
+          ? "Task B improved under the same independent verifier. A human may now decide."
+          : "At least one required result changed. Promotion remains disabled.";
+        promoteButton.disabled = !data.promotion_unlocked;
+        rejectButton.disabled = !data.promotion_unlocked;
+        runButton.disabled = false;
+        runButton.textContent = isHostedPreview ? "Replay verified proof" : "Replay proof";
+        log(data.promotion_unlocked ? "Evidence complete. Human decision unlocked." : "Evidence incomplete. Promotion remains locked.", data.promotion_unlocked ? "pass" : "fail");
+      }
+
+      function startHostedReplay() {
+        reset();
+        renderQueue = Promise.resolve();
+        runButton.disabled = true;
+        runButton.textContent = "Playing verified proof…";
+        log("Replaying evidence verified by GitHub Actions for commit 3f4d194.");
+        const checks = [
+          { id: "task-a-visible", test_count: 2, assertions: [] },
+          { id: "task-a-contract", test_count: 2, assertions: ["Decimal('10.22') != Decimal('10.23')"] },
+          { id: "task-b-baseline", test_count: 2, assertions: ["Decimal('55.22') != Decimal('55.23')"] },
+          { id: "task-b-assisted", test_count: 2, assertions: [] },
+        ];
+        queue(() => log("Clean pre-capability worktree: f0de375."), 260);
+        queue(() => log("Clean capability-assisted worktree: 5b4b8e8."), 260);
+        checks.forEach(check => queue(() => handleCheck(check), 620));
+        queue(() => log("Temporary worktrees removed in the verified run."), 220);
+        queue(() => unlockDecision({ promotion_unlocked: true, duration_ms: 397 }), 500);
+      }
+
       function startReplay() {
         if (location.protocol === "file:") return;
+        if (isHostedPreview) {
+          startHostedReplay();
+          return;
+        }
         reset();
         renderQueue = Promise.resolve();
         runButton.disabled = true;
@@ -330,21 +374,7 @@
         events.addEventListener("complete", event => {
           const data = JSON.parse(event.data);
           events.close();
-          queue(() => {
-            runtime.textContent = `${data.duration_ms}ms actual runtime`;
-            setPhase("decision", "active");
-            gate.dataset.state = data.promotion_unlocked ? "ready" : "locked";
-            gateLabel.textContent = data.promotion_unlocked ? "Promotion gate · evidence satisfied" : "Promotion gate · locked";
-            gateHeading.textContent = data.promotion_unlocked ? "The capability earned promotion review" : "Transfer was not proven";
-            gateCopy.textContent = data.promotion_unlocked
-              ? "Task B improved under the same independent verifier. A human may now decide."
-              : "At least one required result changed. Promotion remains disabled.";
-            promoteButton.disabled = !data.promotion_unlocked;
-            rejectButton.disabled = !data.promotion_unlocked;
-            runButton.disabled = false;
-            runButton.textContent = "Replay proof";
-            log(data.promotion_unlocked ? "Evidence complete. Human decision unlocked." : "Evidence incomplete. Promotion remains locked.", data.promotion_unlocked ? "pass" : "fail");
-          }, 500);
+          queue(() => unlockDecision(data), 500);
         });
         events.addEventListener("error", event => {
           events.close();
@@ -361,6 +391,18 @@
       async function decide(decision) {
         promoteButton.disabled = true;
         rejectButton.disabled = true;
+        if (isHostedPreview) {
+          const promoted = decision === "promote";
+          gate.dataset.state = promoted ? "promoted" : "rejected";
+          gateLabel.textContent = "Hosted preview decision";
+          gateHeading.textContent = promoted ? "Promoted: currency-rules" : "Rejected: currency-rules";
+          gateCopy.textContent = promoted
+            ? "Preview complete. The local demo records the real promotion audit."
+            : "Preview rejected. The verified evidence remains available for review.";
+          setPhase("decision", "done");
+          log(`${decision.toUpperCase()}: hosted preview only; local mode writes the audit.`, promoted ? "pass" : "fail");
+          return;
+        }
         const response = await fetch("/api/decision", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -388,6 +430,12 @@
         offline.style.display = "block";
         runButton.disabled = true;
         runButton.textContent = "Start local server";
+      } else if (isHostedPreview) {
+        modeLabel.innerHTML = '<span class="dot"></span> Hosted verified replay';
+        verifierLabel.textContent = "Verified evidence";
+        modeNote.textContent = "Live worktree mode runs locally";
+        liveMessage.textContent = "Ready to replay the CI-verified evidence.";
+        runButton.textContent = "PLAY VERIFIED PROOF";
       }
       runButton.addEventListener("click", startReplay);
       promoteButton.addEventListener("click", () => decide("promote"));
