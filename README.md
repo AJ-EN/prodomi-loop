@@ -31,6 +31,18 @@ python3 -m unittest discover -s acceptance -p 'test_*.py'
 
 Expected result: `Ran 4 tests ... OK`.
 
+Replay the complete failure-to-promotion proof with temporary real Git
+worktrees:
+
+```sh
+python3 scripts/replay_loop.py
+```
+
+Expected sequence: visible Task A examples pass, Task A's independent contract
+fails for the pre-capability candidate, Task B's baseline fails, and the
+capability-assisted Task B passes. The command exits nonzero if this evidence
+does not hold.
+
 The preserved Task B before/after logs are:
 
 - [`evidence/task-b-baseline.log`](evidence/task-b-baseline.log) - baseline failed 2/2.
