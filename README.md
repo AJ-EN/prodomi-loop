@@ -60,6 +60,9 @@ python3 -m http.server 8000 --directory review-hub
 
 Open `http://localhost:8000` in a browser.
 
+For the exact 90-second narration, preflight commands, and terminal fallback,
+use [`docs/demo-runbook.md`](docs/demo-runbook.md).
+
 ## Scope boundaries
 
 This is not a generic agent dashboard, autonomous deployment system, or model

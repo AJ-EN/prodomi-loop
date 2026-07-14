@@ -33,8 +33,11 @@
       .assisted { border: 1px solid #237554; background: #10281f; }
       .metric { display: block; font-size: 1.8rem; font-weight: 800; letter-spacing: -.04em; margin: 7px 0; }
       .decision { display: flex; gap: 22px; justify-content: space-between; align-items: center; border-color: #2c9b6d; background: linear-gradient(135deg, #0d3025, #10223a); }
-      button { border: 0; border-radius: 10px; padding: 13px 18px; color: #04130d; background: #70e8b0; font-weight: 900; letter-spacing: .04em; }
-      button:disabled { cursor: default; opacity: 1; }
+      .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+      button { border: 0; border-radius: 10px; padding: 13px 18px; color: #04130d; background: #70e8b0; cursor: pointer; font-weight: 900; letter-spacing: .04em; }
+      .secondary { border: 1px solid #6f819e; background: transparent; color: #ced9ea; }
+      .reject { background: #ffaaa7; }
+      .hidden { display: none; }
       .footnote { margin-top: 24px; color: #72819a; font-size: .84rem; }
       @media (max-width: 720px) { .flow, .grid, .compare { grid-template-columns: 1fr; } .wide { grid-column: auto; } .decision { align-items: flex-start; flex-direction: column; } }
     </style>
@@ -44,7 +47,7 @@
       <div class="eyebrow">Capability Review Hub</div>
       <h1>Turn a failed task into a reusable capability.</h1>
       <p class="lede">A controlled currency-regression scenario with independent verification and real clean-worktree evidence.</p>
-      <div class="status"><span class="dot"></span> CAPABILITY PROMOTED · TASK B HOLDOUT IMPROVED</div>
+      <div class="status" id="promotion-status"><span class="dot"></span> CAPABILITY PROMOTED · TASK B HOLDOUT IMPROVED</div>
 
       <nav class="flow" aria-label="Promotion flow">
         <span class="complete">1. Failure</span><span class="complete">2. Diagnosis</span><span class="complete">3. Candidate</span><span class="complete">4. Holdout</span><span class="complete">5. Promote</span>
@@ -75,11 +78,52 @@
           </div>
         </section>
         <section class="wide decision">
-          <div><span class="label pass">DECISION</span><h2>PROMOTED: currency-rules</h2><p>Evidence, capability diff, and a fresh-task improvement are preserved in the repository.</p></div>
-          <button disabled aria-label="Capability already promoted">✓ PROMOTED</button>
+          <div><span class="label pass" id="decision-label">DECISION</span><h2 id="decision-heading">PROMOTED: currency-rules</h2><p id="decision-copy">Evidence, capability diff, and a fresh-task improvement are preserved in the repository.</p></div>
+          <div class="actions" aria-live="polite">
+            <button class="secondary" id="open-review">REVIEW DECISION</button>
+            <button class="hidden" id="promote">✓ PROMOTE CAPABILITY</button>
+            <button class="hidden reject" id="reject">REJECT CANDIDATE</button>
+          </div>
         </section>
       </div>
       <p class="footnote">Evidence is intentionally narrow: one repository, two related tasks, one capability type, and independent acceptance contracts. This is a proof of environment improvement, not a claim of model-weight learning.</p>
     </main>
+    <script>
+      const status = document.querySelector("#promotion-status");
+      const label = document.querySelector("#decision-label");
+      const heading = document.querySelector("#decision-heading");
+      const copy = document.querySelector("#decision-copy");
+      const openReview = document.querySelector("#open-review");
+      const promote = document.querySelector("#promote");
+      const reject = document.querySelector("#reject");
+
+      function showReview() {
+        status.innerHTML = "<span class=\"dot\"></span> CAPABILITY READY FOR HUMAN REVIEW";
+        label.textContent = "HUMAN DECISION REQUIRED";
+        heading.textContent = "Promote or reject currency-rules";
+        copy.textContent = "The stored evidence is unchanged. Choose a decision for this review session.";
+        openReview.classList.add("hidden");
+        promote.classList.remove("hidden");
+        reject.classList.remove("hidden");
+      }
+
+      function showDecision(decision) {
+        const approved = decision === "promoted";
+        status.innerHTML = `<span class="dot"></span> CAPABILITY ${approved ? "PROMOTED" : "REJECTED"} · TASK B HOLDOUT IMPROVED`;
+        label.textContent = "DECISION RECORDED";
+        heading.textContent = `${approved ? "PROMOTED" : "REJECTED"}: currency-rules`;
+        copy.textContent = approved
+          ? "Promotion is justified by the independent Task B improvement. The repository audit record remains the source of truth."
+          : "The candidate was rejected in this review session; the underlying evidence remains available for inspection.";
+        promote.classList.add("hidden");
+        reject.classList.add("hidden");
+        openReview.classList.remove("hidden");
+        openReview.textContent = "REOPEN REVIEW";
+      }
+
+      openReview.addEventListener("click", showReview);
+      promote.addEventListener("click", () => showDecision("promoted"));
+      reject.addEventListener("click", () => showDecision("rejected"));
+    </script>
   </body>
 </html>
