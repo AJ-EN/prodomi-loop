@@ -36,3 +36,6 @@ jobs:
 
       - name: Replay the capability-promotion proof
         run: python3 scripts/replay_loop.py
+
+      - name: Smoke-test the live Review Hub
+        run: python3 scripts/smoke_review_hub.py

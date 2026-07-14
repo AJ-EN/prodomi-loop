@@ -51,20 +51,23 @@ The preserved Task B before/after logs are:
 - [`evidence/task-b-baseline.log`](evidence/task-b-baseline.log) - baseline failed 2/2.
 - [`evidence/task-b-assisted.log`](evidence/task-b-assisted.log) - capability-assisted candidate passed 2/2.
 
-## Review Hub
+## Live Review Hub
 
-The no-dependency review surface presents the evidence in the intended demo
-order: incident, diagnosis, candidate capability, holdout comparison, and
-promotion.
+The no-dependency local application runs the real worktree replay, streams the
+verifier evidence into the browser, and unlocks Promote/Reject only after the
+fresh holdout improves.
 
 ```sh
-python3 -m http.server 8000 --directory review-hub
+python3 review-hub/server.py
 ```
 
-Open `http://localhost:8000` in a browser.
+Open `http://127.0.0.1:8000` and click `RUN LIVE PROOF`.
 
 For the exact 90-second narration, preflight commands, and terminal fallback,
 use [`docs/demo-runbook.md`](docs/demo-runbook.md).
+
+The first-principles competitive positioning behind this interaction is in
+[`docs/winning-demo-strategy.md`](docs/winning-demo-strategy.md).
 
 ## Scope boundaries
 

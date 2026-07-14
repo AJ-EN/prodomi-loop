@@ -16,26 +16,29 @@ The replay command must end with `PROMOTE`. The rehearsal command must end with
 Start the Review Hub:
 
 ```sh
-python3 -m http.server 8000 --directory review-hub
+python3 review-hub/server.py
 ```
 
-Open `http://localhost:8000`.
+Open `http://127.0.0.1:8000`. The page must begin with the promotion gate locked.
 
 ## Live narration
 
 | Time | Show | Say |
 | --- | --- | --- |
-| 0:00-0:12 | Task A visible examples pass | “Plausible patches often look correct because ordinary examples are green.” |
-| 0:12-0:28 | Task A independent failure in replay output | “The independent currency contract catches the rule the candidate missed.” |
-| 0:28-0:42 | Diagnosis and candidate capability card | “The problem is not arithmetic; it is a missing repository capability: banker's rounding and currency-specific minor units.” |
-| 0:42-0:58 | Task B baseline fail card | “We do not promote on Task A. A fresh related refund task still fails without the capability.” |
-| 0:58-1:15 | Task B capability-assisted pass card | “The same independent contract passes in a separate clean worktree when the fresh task uses the capability.” |
-| 1:15-1:30 | Click `REVIEW DECISION`, then `PROMOTE CAPABILITY` | “We promote only after the environment improved on a new task. We measure whether the agent earned the right to ship.” |
+| 0:00-0:08 | Locked evidence gate; click `RUN LIVE PROOF` | “A coding-agent patch can look correct before it has earned our trust.” |
+| 0:08-0:22 | Visible Task A examples turn green; independent contract turns red | “The visible suite passes. Our independent currency contract catches the hidden rule.” |
+| 0:22-0:38 | Diagnosis and capability artifact activate | “Prodomi does not retry. It converts the failure into a reusable repository capability: banker's rounding and currency-specific minor units.” |
+| 0:38-0:53 | Task B baseline turns red | “We still do not promote it. A fresh refund task fails without that capability.” |
+| 0:53-1:08 | Capability-assisted Task B turns green; gate unlocks | “The same holdout passes in a separate clean worktree when Codex can use the new capability.” |
+| 1:08-1:22 | Click `PROMOTE CAPABILITY` | “Only now does a human promote it for future runs. Generated guidance is not learning; proven transfer is.” |
+| 1:22-1:30 | Promoted state and audit line | “We do not measure code output. We measure whether the repository environment got better.” |
 
 ## Backup and fallback
 
 Record one clean 90-second screen capture from this runbook after the three
-rehearsals pass. If the browser is unavailable, use the replay command and show:
+rehearsals pass. The recording must show the page beginning locked, the live
+verifier stream, the gate unlocking, and the human promotion click. If the
+browser is unavailable, use the replay command and show:
 
 1. `skills/currency-rules/SKILL.md`
 2. `evidence/task-b-baseline.log`
