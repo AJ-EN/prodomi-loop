@@ -18,6 +18,11 @@ an independent boundary-case acceptance check. The expected diagnosis is a
 missing domain rule / specification gap: the repository has not made its
 currency-rounding policy explicit or enforceable.
 
+The visible examples are deliberately incomplete ordinary USD cases in
+`tests/test_checkout_visible.py`. They must pass for the baseline candidate;
+the independent contract is the authority for half-way and currency-specific
+boundaries.
+
 ## Acceptance contract
 
 The eventual focused acceptance test must be independent from the initial

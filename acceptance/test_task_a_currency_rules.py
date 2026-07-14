@@ -6,13 +6,15 @@ not the implementer's definition of done.
 """
 
 from decimal import Decimal
+import os
 from pathlib import Path
 import sys
 import unittest
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
+SOURCE_ROOT = Path(os.environ.get("PRODOMI_SOURCE_ROOT", REPOSITORY_ROOT / "src"))
+sys.path.insert(0, str(SOURCE_ROOT))
 
 from checkout import calculate_checkout_total  # noqa: E402
 
