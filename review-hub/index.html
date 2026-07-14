@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prodomi Loop | Capability Review</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #09111f; color: #e6edf7; }
+      main { max-width: 1120px; margin: 0 auto; padding: 48px 24px 72px; }
+      .eyebrow { color: #86a9ff; font-size: .78rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+      h1 { max-width: 800px; font-size: clamp(2.4rem, 6vw, 4.8rem); letter-spacing: -.065em; line-height: .96; margin: 12px 0 20px; }
+      .lede { max-width: 680px; color: #adbbd1; font-size: 1.1rem; line-height: 1.6; }
+      .status { display: inline-flex; gap: 8px; align-items: center; margin-top: 22px; padding: 9px 12px; border: 1px solid #1e9b69; border-radius: 999px; background: #0e2a22; color: #82e6ba; font-size: .86rem; font-weight: 800; }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: #52d99a; box-shadow: 0 0 14px #52d99a; }
+      .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 44px 0 26px; }
+      .flow span { padding: 12px; border: 1px solid #263750; border-radius: 10px; text-align: center; color: #afbed5; font-size: .85rem; }
+      .flow .complete { border-color: #1f925f; color: #84e7ba; background: #0d261f; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      section { border: 1px solid #263750; border-radius: 16px; padding: 22px; background: linear-gradient(135deg, #101c2e, #0d1727); }
+      .wide { grid-column: 1 / -1; }
+      h2 { margin: 0 0 12px; font-size: 1.15rem; }
+      p { color: #aebcd1; line-height: 1.55; margin: 0; }
+      .label { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: .72rem; font-weight: 900; letter-spacing: .06em; }
+      .fail { color: #ffaaa7; background: #421e27; }
+      .pass { color: #83e8ba; background: #0d3327; }
+      code { color: #d7e2f4; font-size: .84rem; }
+      .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+      .result { border-radius: 12px; padding: 18px; }
+      .baseline { border: 1px solid #77343b; background: #28171d; }
+      .assisted { border: 1px solid #237554; background: #10281f; }
+      .metric { display: block; font-size: 1.8rem; font-weight: 800; letter-spacing: -.04em; margin: 7px 0; }
+      .decision { display: flex; gap: 22px; justify-content: space-between; align-items: center; border-color: #2c9b6d; background: linear-gradient(135deg, #0d3025, #10223a); }
+      button { border: 0; border-radius: 10px; padding: 13px 18px; color: #04130d; background: #70e8b0; font-weight: 900; letter-spacing: .04em; }
+      button:disabled { cursor: default; opacity: 1; }
+      .footnote { margin-top: 24px; color: #72819a; font-size: .84rem; }
+      @media (max-width: 720px) { .flow, .grid, .compare { grid-template-columns: 1fr; } .wide { grid-column: auto; } .decision { align-items: flex-start; flex-direction: column; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="eyebrow">Capability Review Hub</div>
+      <h1>Turn a failed task into a reusable capability.</h1>
+      <p class="lede">A controlled currency-regression scenario with independent verification and real clean-worktree evidence.</p>
+      <div class="status"><span class="dot"></span> CAPABILITY PROMOTED · TASK B HOLDOUT IMPROVED</div>
+
+      <nav class="flow" aria-label="Promotion flow">
+        <span class="complete">1. Failure</span><span class="complete">2. Diagnosis</span><span class="complete">3. Candidate</span><span class="complete">4. Holdout</span><span class="complete">5. Promote</span>
+      </nav>
+
+      <div class="grid">
+        <section>
+          <span class="label fail">TASK A · FAILURE CAUGHT</span>
+          <h2>Checkout candidate looked plausible</h2>
+          <p>It used round-half-up and assumed two decimal places. The independent contract rejected <code>USD 10.225 → 10.23</code> and <code>JPY 100.5 → 100.50</code>.</p>
+        </section>
+        <section>
+          <span class="label pass">DIAGNOSIS · SPECIFICATION GAP</span>
+          <h2>The repository lacked a currency rule</h2>
+          <p>The missing capability was explicit: Decimal-only values, banker's rounding, configured minor units, and rejection of unknown currencies.</p>
+        </section>
+        <section class="wide">
+          <span class="label pass">CANDIDATE CAPABILITY</span>
+          <h2><code>skills/currency-rules/SKILL.md</code></h2>
+          <p>The capability is repository-local and reviewable. It defines <code>ROUND_HALF_EVEN</code>, USD as two minor units, and JPY as zero minor units. Task A then passed its independent contract.</p>
+        </section>
+        <section class="wide">
+          <span class="label pass">TASK B · FRESH HOLDOUT EVIDENCE</span>
+          <h2>Same verifier. Separate refund task. Clean worktrees.</h2>
+          <div class="compare">
+            <div class="result baseline"><span class="label fail">PRE-CAPABILITY BASELINE</span><span class="metric">FAIL · 0/2</span><p>Refund candidate on the pre-capability commit returned <code>55.23</code> and <code>100.50</code>.</p></div>
+            <div class="result assisted"><span class="label pass">CAPABILITY-ASSISTED</span><span class="metric">PASS · 2/2</span><p>Fresh refund candidate reused the configured checkout policy and satisfied the same contract.</p></div>
+          </div>
+        </section>
+        <section class="wide decision">
+          <div><span class="label pass">DECISION</span><h2>PROMOTED: currency-rules</h2><p>Evidence, capability diff, and a fresh-task improvement are preserved in the repository.</p></div>
+          <button disabled aria-label="Capability already promoted">✓ PROMOTED</button>
+        </section>
+      </div>
+      <p class="footnote">Evidence is intentionally narrow: one repository, two related tasks, one capability type, and independent acceptance contracts. This is a proof of environment improvement, not a claim of model-weight learning.</p>
+    </main>
+  </body>
+</html>
