@@ -1,0 +1,38 @@
+name: Verify capability promotion
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Independent acceptance and worktree replay
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Fetch immutable Task B evidence commits
+        run: git fetch --no-tags origin demo/task-b-baseline demo/task-b-assisted
+
+      - name: Run independent acceptance contracts
+        run: python3 -m unittest discover -s acceptance -p 'test_*.py'
+
+      - name: Run visible Task A examples
+        run: python3 -m unittest tests/test_checkout_visible.py
+
+      - name: Replay the capability-promotion proof
+        run: python3 scripts/replay_loop.py

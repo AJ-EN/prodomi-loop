@@ -11,6 +11,9 @@ This MVP is a controlled currency-regression scenario, deliberately scoped for
 a deterministic 90-second demo. It uses real Git worktrees, repository-local
 guidance, an independent acceptance contract, and stored test evidence.
 
+GitHub Actions independently runs the acceptance contracts and clean-worktree
+replay on every push or pull request targeting `main`.
+
 ## The demonstrated loop
 
 | Stage | Evidence |
