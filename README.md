@@ -242,7 +242,7 @@ fast, local, deterministic, and has a CLI fallback.
 
 ```text
 acceptance/                 Independent Task A and Task B contracts
-docs/                       Demo runbook and competitive strategy
+docs/                       Public demo and reproducibility documentation
 evidence/                   Preserved baseline, assisted, and promotion logs
 review-hub/                 Minimal live UI and local evidence server
 scripts/replay_loop.py      Clean-worktree before/after experiment
@@ -300,8 +300,6 @@ Both successful and rejected promotions are useful evidence.
 > measure whether the repository environment got better.
 
 For the exact 90-second narration and terminal fallback, see
-[`docs/demo-runbook.md`](docs/demo-runbook.md). For the first-principles
-competitive reasoning, see
-[`docs/winning-demo-strategy.md`](docs/winning-demo-strategy.md).
+[`docs/demo-runbook.md`](docs/demo-runbook.md).
 
 Copyright 2026 Ayush Jangid. Licensed under Apache-2.0.
