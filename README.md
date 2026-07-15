@@ -1,6 +1,7 @@
 # Prodomi Loop
 
 [![Verify capability promotion](https://github.com/AJ-EN/prodomi-loop/actions/workflows/verify.yml/badge.svg)](https://github.com/AJ-EN/prodomi-loop/actions/workflows/verify.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 > **Coding agents do not fail because they cannot write plausible code. They
 > fail because repositories do not preserve and enforce the rules they were
@@ -276,6 +277,20 @@ Production hardening would add policy enforcement, signed audit logs, broader
 holdout suites, CI/issue-tracker integrations, and stronger isolation. The
 hackathon MVP deliberately proves the smallest complete loop first.
 
+## Open-source direction
+
+Prodomi Loop is released under the [Apache License 2.0](LICENSE). The project is
+open for inspection, reproduction, modification, and commercial use under the
+license terms. The Prodomi name and identity are not licensed as trademarks.
+
+The next milestone is cross-domain evidence, not more interface surface. See
+the [roadmap](ROADMAP.md) for the validation plan and
+[contribution guide](CONTRIBUTING.md) before proposing changes.
+
+If you reproduce the experiment, open an issue with the repository, task,
+independent verifier, baseline result, assisted result, and capability diff.
+Both successful and rejected promotions are useful evidence.
+
 ## Pitch
 
 > Coding agents repeatedly fail because repositories do not preserve the rules
@@ -288,3 +303,5 @@ For the exact 90-second narration and terminal fallback, see
 [`docs/demo-runbook.md`](docs/demo-runbook.md). For the first-principles
 competitive reasoning, see
 [`docs/winning-demo-strategy.md`](docs/winning-demo-strategy.md).
+
+Copyright 2026 Ayush Jangid. Licensed under Apache-2.0.
